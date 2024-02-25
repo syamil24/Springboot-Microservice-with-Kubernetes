@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloud-gateway-app
+  labels:
+      app: cloud-gateway-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloud-gateway-app
+  template:
+    metadata:
+      labels:
+        app: cloud-gateway-app
+    spec:
+      containers:
+      - name: cloud-gateway-app
+        image: madlim/cloud-gateway:0.0.1
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 9191
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: cloud-gateway-svc
+spec:
+  selector:
+    app: cloud-gateway-app
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 9191
+    protocol: TCP
